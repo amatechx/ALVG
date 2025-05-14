@@ -1,0 +1,10 @@
+moviepy
+numpy
+openai-whisper
+customtkinter
+pillow
+ffmpeg-python
+tqdm
+opencv-python
+colorama
+pydub
