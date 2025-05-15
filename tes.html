@@ -1,0 +1,3619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bot Ninja Proxy</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #f0f0f0;
+            --accent-color: #00deee;
+            --secondary-color: #03dac6;
+            --error-color: #cf6679;
+            --border-color: #333333;
+            --button-hover: #06defa;
+            --input-bg: #2c2c2c;
+            --success-color: #4CAF50;
+            --warning-color: #FFC107;
+            --info-color: #2196F3;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--accent-color);
+            margin-bottom: 30px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-container {
+            background-color: var(--card-bg);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .browser-container {
+            background-color: var(--card-bg);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
+        }
+
+        .browser-toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+            background-color: var(--input-bg);
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        input:focus, select:focus {
+            outline: 2px solid var(--accent-color);
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--button-hover);
+        }
+
+        button:disabled {
+            background-color: var(--border-color);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #urlInput {
+            flex: 1;
+        }
+
+        .notification {
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .notification-success {
+            background-color: rgba(76, 175, 80, 0.2);
+            border-left: 4px solid var(--success-color);
+        }
+
+        .notification-error {
+            background-color: rgba(207, 102, 121, 0.2);
+            border-left: 4px solid var(--error-color);
+        }
+
+        .notification-info {
+            background-color: rgba(33, 150, 243, 0.2);
+            border-left: 4px solid var(--info-color);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            margin-left: 5px;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .badge-warning {
+            background-color: var(--warning-color);
+            color: black;
+        }
+
+        .badge-error {
+            background-color: var(--error-color);
+            color: white;
+        }
+
+        .badge-info {
+            background-color: var(--info-color);
+            color: white;
+        }
+
+        .multi-input {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: 5px;
+            width: 100%;
+            min-height: 100px;
+            color: var(--text-color);
+            font-family: monospace;
+            resize: vertical;
+        }
+
+        .proxy-pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+        }
+
+        .pagination-info {
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .pagination-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        .pagination-controls button {
+            padding: 5px 10px;
+            min-width: 35px;
+        }
+
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .search-bar input {
+            flex: 1;
+        }
+
+        .search-bar button {
+            padding: 10px 15px;
+        }
+
+        .multi-browser-container {
+            background-color: var(--input-bg);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .browser-instance {
+            background-color: var(--card-bg);
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .browser-instance-info {
+            flex: 1;
+        }
+
+        .browser-instance-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .browser-add-btn {
+            margin-top: 10px;
+            background-color: var(--info-color);
+        }
+
+        .rotation-settings {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .batch-controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .batch-url-container {
+            margin-top: 10px;
+        }
+
+        .notification-batch {
+            background-color: rgba(33, 150, 243, 0.1);
+            border-left: 4px solid var(--info-color);
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
+        .proxy-card {
+            background-color: var(--input-bg);
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .proxy-info {
+            flex: 1;
+        }
+
+        .proxy-status {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .status-online {
+            background-color: var(--success-color);
+        }
+
+        .status-offline {
+            background-color: var(--error-color);
+        }
+
+        .proxy-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .proxy-stats {
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        #webview {
+            width: 100%;
+            flex: 1;
+            border: none;
+            border-radius: 5px;
+            background-color: white;
+            display: none;
+        }
+
+        .tab {
+            overflow: hidden;
+            background-color: var(--input-bg);
+            border-radius: 5px 5px 0 0;
+        }
+
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 10px 15px;
+            transition: 0.3s;
+            color: var(--text-color);
+            border-radius: 0;
+        }
+
+        .tab button:hover {
+            background-color: var(--button-hover);
+            color: var(--bg-color);
+        }
+
+        .tab button.active {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+        }
+
+        .tabcontent {
+            display: none;
+            padding: 15px;
+            background-color: var(--card-bg);
+            border-radius: 0 0 5px 5px;
+        }
+
+        .loader {
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--accent-color);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: none;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .settings-section {
+            margin-bottom: 25px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .settings-title {
+            color: var(--bg-color);
+            margin-bottom: 0;
+            font-size: 18px;
+            background-color: var(--accent-color);
+            padding: 12px 15px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .settings-title-icon {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .settings-group {
+            background-color: var(--input-bg);
+            padding: 20px;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            background-color: var(--card-bg);
+            padding: 12px 15px;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+        
+        .settings-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .settings-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent-color);
+            cursor: pointer;
+        }
+
+        .settings-item label {
+            margin-bottom: 0;
+            margin-left: 15px;
+            cursor: pointer;
+        }
+        
+        .setting-description {
+            color: var(--text-color);
+            opacity: 0.7;
+            font-size: 12px;
+            margin-top: 5px;
+            margin-left: 35px;
+        }
+
+        .range-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px 15px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .range-value {
+            background-color: var(--accent-color);
+            color: var(--bg-color);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--bg-color);
+            outline: none;
+            flex: 1;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .logs-container {
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: var(--input-bg);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .log-timestamp {
+            color: var(--accent-color);
+            margin-right: 10px;
+        }
+
+        .log-text {
+            color: var(--text-color);
+        }
+
+        .bot-dashboard {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .bot-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .status-indicator {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+        }
+
+        .status-online {
+            background-color: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+        }
+
+        .status-offline {
+            background-color: var(--error-color);
+        }
+
+        .status-working {
+            background-color: var(--warning-color);
+            box-shadow: 0 0 10px var(--warning-color);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        .task-list {
+            background-color: var(--input-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            background-color: var(--card-bg);
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .task-progress {
+            height: 6px;
+            width: 100px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .task-progress-bar {
+            height: 100%;
+            background-color: var(--accent-color);
+            width: 0%;
+        }
+
+        .bot-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .bot-controls button {
+            flex: 1;
+        }
+
+        .start-bot-btn {
+            background-color: var(--success-color);
+        }
+
+        .pause-bot-btn {
+            background-color: var(--warning-color);
+            color: black;
+        }
+
+        .stop-bot-btn {
+            background-color: var(--error-color);
+        }
+
+        .task-config {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .config-item {
+            background-color: var(--input-bg);
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .config-header {
+            font-weight: bold;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .config-content {
+            margin-top: 10px;
+        }
+
+        .statistics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--input-bg);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .small-button {
+            background-color: var(--input-bg);
+            color: var(--accent-color);
+            border: 1px solid var(--border-color);
+            padding: 2px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .add-task-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1000;
+            width: 500px;
+            max-width: 90%;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
+        .task-template-section {
+            background-color: var(--input-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .task-template-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .task-template-item {
+            background-color: var(--card-bg);
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .task-template-name {
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        .task-template-description {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .advanced-settings {
+            background-color: var(--input-bg);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+
+        .advanced-settings-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .advanced-settings-content {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .time-range-picker {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .time-input {
+            width: 80px;
+        }
+
+        .task-export-import {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        /* Styles for Analytics Dashboard */
+        .analytics-dashboard {
+            padding: 10px;
+        }
+        
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .dashboard-time-range {
+            display: flex;
+            align-items: center;
+        }
+        
+        .statistics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .large-stat {
+            grid-column: span 2;
+        }
+        
+        .stat-card {
+            background-color: var(--input-bg);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .stat-title {
+            font-size: 14px;
+            color: var(--text-color);
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+        
+        .stat-chart {
+            height: 80px;
+            margin-top: 10px;
+            position: relative;
+        }
+        
+        .stat-trend {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .positive {
+            color: var(--success-color);
+        }
+        
+        .negative {
+            color: var(--error-color);
+        }
+        
+        .chart-container {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .chart-body {
+            height: 300px;
+            position: relative;
+        }
+        
+        .placeholder-chart {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: var(--accent-color);
+            font-style: italic;
+        }
+        
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .analytics-panel {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .panel-header {
+            background-color: var(--input-bg);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .panel-header h4 {
+            margin: 0;
+            color: var(--accent-color);
+        }
+        
+        .panel-body {
+            padding: 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        .data-table th {
+            background-color: var(--input-bg);
+            padding: 10px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+        
+        .data-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .data-table tr:hover {
+            background-color: var(--input-bg);
+        }
+        
+        .export-section {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 15px;
+        }
+        
+        .export-section h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+        
+        .export-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+        }
+        
+        /* Fingerprint management styles */
+        .day-selector {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .day-checkbox {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .day-checkbox input {
+            width: auto;
+        }
+        
+        .day-checkbox label {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+        }
+        
+        .time-slots-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .time-slot {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .time-range-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .secondary-button {
+            background-color: var(--input-bg);
+            color: var(--accent-color);
+            border: 1px solid var(--border-color);
+            font-weight: normal;
+        }
+        
+        .secondary-button:hover {
+            background-color: var(--card-bg);
+            border-color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <h1>Bot Ninja Proxy</h1>
+
+    <div class="container">
+        <div id="notificationArea"></div>
+
+        <div class="form-container">
+            <div class="tab">
+                <button class="tablinks active" onclick="openTab(event, 'TabBrowser')">Browser</button>
+                <button class="tablinks" onclick="openTab(event, 'TabProxies')">Daftar Proxy</button>
+                <button class="tablinks" onclick="openTab(event, 'TabSettings')">Pengaturan</button>
+                <button class="tablinks" onclick="openTab(event, 'TabAPI')">API</button>
+                <button class="tablinks" onclick="openTab(event, 'TabAnalytics')">Analitik</button>
+                <button class="tablinks" onclick="openTab(event, 'TabLogs')">Log Aktivitas</button>
+            </div>
+
+            <div id="TabBrowser" class="tabcontent" style="display: block;">
+                <div class="bot-dashboard">
+                    <div class="bot-status">
+                        <div class="status-indicator status-offline" id="botStatusIndicator"></div>
+                        <div>
+                            <strong>Status Bot:</strong> <span id="botStatusText">Tidak Aktif</span>
+                        </div>
+                        <div style="margin-left: auto;">
+                            <strong>Proxy Aktif:</strong> <span id="activeProxyText">Belum dipilih</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bot-controls">
+                        <button id="startBotBtn" class="start-bot-btn">Mulai Bot</button>
+                        <button id="pauseBotBtn" class="pause-bot-btn" disabled>Jeda Bot</button>
+                        <button id="stopBotBtn" class="stop-bot-btn" disabled>Hentikan Bot</button>
+                    </div>
+                    
+                    <div class="statistics">
+                        <div class="stat-card">
+                            <div class="stat-value" id="taskCompletedCount">0</div>
+                            <div class="stat-label">Tugas Selesai</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="proxyRotationCount">0</div>
+                            <div class="stat-label">Rotasi Proxy</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="requestCount">0</div>
+                            <div class="stat-label">Total Request</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value" id="errorCount">0</div>
+                            <div class="stat-label">Error</div>
+                        </div>
+                    </div>
+                    
+                    <h3>Daftar Tugas <button id="addTaskBtn" class="small-button">+ Tambah Tugas</button></h3>
+                    <div class="task-list" id="taskListContainer">
+                        <!-- Task items akan dibuat di sini -->
+                        <div class="task-item">
+                            <div class="task-info">
+                                <strong>URL:</strong> https://example.com
+                            </div>
+                            <div class="task-progress">
+                                <div class="task-progress-bar" style="width: 70%;"></div>
+                            </div>
+                            <div>
+                                <button class="small-button">Edit</button>
+                                <button class="small-button">Hapus</button>
+                            </div>
+                        </div>
+                        <div class="task-item">
+                            <div class="task-info">
+                                <strong>URL:</strong> https://google.com
+                            </div>
+                            <div class="task-progress">
+                                <div class="task-progress-bar" style="width: 20%;"></div>
+                            </div>
+                            <div>
+                                <button class="small-button">Edit</button>
+                                <button class="small-button">Hapus</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="bulkUrlInput">URL Target:</label>
+                        <textarea class="multi-input" id="bulkUrlInput" placeholder="Masukkan beberapa URL (satu per baris)
+contoh:
+https://example.com
+https://google.com"></textarea>
+                        
+                        <div style="margin-top: 10px; display: flex; gap: 10px;">
+                            <button id="addUrlsBtn">Tambah URL</button>
+                            <select id="batchDelay">
+                                <option value="5">Jeda 5 detik</option>
+                                <option value="10">Jeda 10 detik</option>
+                                <option value="30">Jeda 30 detik</option>
+                                <option value="60">Jeda 1 menit</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="display: none;">
+                    <!-- Hidden browser for headless operation -->
+                    <iframe id="webview" sandbox="allow-same-origin allow-scripts allow-forms" src="about:blank"></iframe>
+                </div>
+                
+                <div id="addTaskModal" class="add-task-modal" style="display: none;">
+                    <h3>Tambah Tugas Baru</h3>
+                    <div class="form-group">
+                        <label for="taskName">Nama Tugas:</label>
+                        <input type="text" id="taskName" placeholder="Masukkan nama untuk tugas ini">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="taskUrl">URL Target:</label>
+                        <input type="text" id="taskUrl" placeholder="https://example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Jenis Operasi:</label>
+                        <div style="display: flex; gap: 15px; margin-top: 10px; margin-bottom: 15px;">
+                            <div>
+                                <input type="radio" id="operationVisit" name="operationType" checked>
+                                <label for="operationVisit">Kunjungi URL</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="operationForm" name="operationType">
+                                <label for="operationForm">Isi Formulir</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="operationScrap" name="operationType">
+                                <label for="operationScrap">Ambil Data</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="formFillConfig" style="display: none;">
+                        <label>Konfigurasi Pengisian Form:</label>
+                        <div class="task-template-section">
+                            <div class="form-group">
+                                <label for="formSelector">Selector Form:</label>
+                                <input type="text" id="formSelector" placeholder="#contact-form, .form, form[name=login]">
+                            </div>
+                            <div class="form-group">
+                                <label>Data Form:</label>
+                                <textarea class="multi-input" id="formData" placeholder='Format JSON: [{"selector": "#username", "value": "user123"}, {"selector": "#password", "value": "pass123"}]'></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="submitSelector">Selector Tombol Submit:</label>
+                                <input type="text" id="submitSelector" placeholder="button[type=submit], #submit-btn">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" id="scrapConfig" style="display: none;">
+                        <label>Konfigurasi Scraping:</label>
+                        <div class="task-template-section">
+                            <div class="form-group">
+                                <label for="scrapSelectors">Selector Elemen (satu per baris):</label>
+                                <textarea class="multi-input" id="scrapSelectors" placeholder=".product-title
+.product-price
+.product-description"
+                                ></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="scrapPagination">Selector Pagination (opsional):</label>
+                                <input type="text" id="scrapPagination" placeholder=".pagination a.next, .load-more">
+                            </div>
+                            <div class="form-group">
+                                <label for="scrapMaxPages">Jumlah Maksimum Halaman:</label>
+                                <input type="number" id="scrapMaxPages" min="1" max="100" value="1">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="advanced-settings">
+                        <div class="advanced-settings-header">
+                            <span>Pengaturan Lanjutan</span>
+                            <button class="small-button" id="toggleAdvancedSettings">Tampilkan</button>
+                        </div>
+                        <div class="advanced-settings-content" id="advancedSettingsContent">
+                            <div class="form-group">
+                                <label>Jadwal Eksekusi:</label>
+                                <div class="settings-item">
+                                    <input type="checkbox" id="scheduleTask">
+                                    <div>
+                                        <label for="scheduleTask">Jadwalkan Tugas</label>
+                                        <div class="setting-description">Jalankan tugas pada waktu tertentu</div>
+                                    </div>
+                                </div>
+                                <div id="scheduleSettings" style="display: none;">
+                                    <div class="form-group">
+                                        <label>Jam Eksekusi:</label>
+                                        <div class="time-range-picker">
+                                            <input type="time" id="scheduleStartTime" class="time-input">
+                                            <span>sampai</span>
+                                            <input type="time" id="scheduleEndTime" class="time-input">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Interval (dalam menit):</label>
+                                        <input type="number" id="scheduleInterval" min="5" value="30">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Pengaturan Proxy:</label>
+                                <div class="settings-item">
+                                    <input type="checkbox" id="taskSpecificProxy">
+                                    <div>
+                                        <label for="taskSpecificProxy">Gunakan Proxy Spesifik</label>
+                                        <div class="setting-description">Tetapkan proxy khusus untuk tugas ini</div>
+                                    </div>
+                                </div>
+                                <div id="proxySettings" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="taskProxyList">Pilih Proxy:</label>
+                                        <select id="taskProxyList">
+                                            <option value="random">Acak dari daftar</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="settings-item">
+                                        <input type="checkbox" id="taskRotateProxy">
+                                        <div>
+                                            <label for="taskRotateProxy">Rotasi Proxy saat Error</label>
+                                            <div class="setting-description">Otomatis mengubah proxy jika terjadi error</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Pengaturan Perilaku:</label>
+                                <div class="settings-item">
+                                    <input type="checkbox" id="taskRandomDelay" checked>
+                                    <div>
+                                        <label for="taskRandomDelay">Jeda Acak</label>
+                                        <div class="setting-description">Tambahkan jeda acak untuk mensimulasikan perilaku manusia</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Rentang Jeda (detik):</label>
+                                    <div class="time-range-picker">
+                                        <input type="number" id="minDelay" min="1" max="60" value="2" class="time-input">
+                                        <span>sampai</span>
+                                        <input type="number" id="maxDelay" min="1" max="120" value="10" class="time-input">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Pengaturan Error:</label>
+                                <div class="settings-item">
+                                    <input type="checkbox" id="retryOnError" checked>
+                                    <div>
+                                        <label for="retryOnError">Coba Ulang saat Error</label>
+                                        <div class="setting-description">Otomatis mencoba ulang tugas jika gagal</div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="maxRetries">Jumlah Maksimum Percobaan:</label>
+                                    <input type="number" id="maxRetries" min="1" max="10" value="3">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-export-import">
+                        <button id="exportTaskConfigBtn" class="secondary-button">Ekspor Konfigurasi</button>
+                        <button id="importTaskConfigBtn" class="secondary-button">Impor Konfigurasi</button>
+                    </div>
+                    
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button id="saveTaskBtn">Simpan Tugas</button>
+                        <button id="cancelTaskBtn" class="secondary-button">Batal</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="TabProxies" class="tabcontent">
+                <h3>Daftar Proxy Tersedia</h3>
+                
+                <div class="notification-batch">
+                    <strong>Info:</strong> Sistem dapat mengelola jutaan proxy. Gunakan fitur pencarian untuk menemukan proxy spesifik.
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" id="proxySearchInput" placeholder="Cari proxy (IP, negara, sumber)">
+                    <button id="proxySearchBtn">Cari</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="proxySource">Sumber Proxy:</label>
+                    <select id="proxySource">
+                        <option value="all">Semua Sumber</option>
+                        <option value="free-proxy-list">Free Proxy List</option>
+                        <option value="spys-one">Spys.one</option>
+                        <option value="geonode">Geonode</option>
+                        <option value="proxyscrape">ProxyScrape</option>
+                        <option value="proxynova">ProxyNova</option>
+                        <option value="hidemy-name">HideMy.name</option>
+                        <option value="proxydb">ProxyDB</option>
+                        <option value="custom">Kustom / Impor</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <div class="batch-controls">
+                        <button id="refreshProxiesBtn">Segarkan Daftar Proxy</button>
+                        <button id="importProxiesBtn">Impor Proxy</button>
+                        <button id="exportProxiesBtn">Ekspor Proxy</button>
+                    </div>
+                </div>
+                
+                <div id="importProxyContainer" style="display: none;">
+                    <textarea class="multi-input" id="bulkProxyInput" placeholder="Masukkan daftar proxy (satu per baris dalam format IP:PORT)
+contoh:
+103.126.12.88:80
+36.91.148.36:8080"></textarea>
+                    <button id="saveBulkProxyBtn" style="margin-top: 10px;">Simpan Daftar</button>
+                </div>
+                
+                <div id="proxyList">
+                    <!-- Proxy items will be generated here -->
+                </div>
+                
+                <div class="proxy-pagination">
+                    <div class="pagination-info">Menampilkan <span id="proxyStartRange">1</span>-<span id="proxyEndRange">50</span> dari <span id="totalProxies">0</span> proxy</div>
+                    <div class="pagination-controls">
+                        <button id="firstPageBtn">«</button>
+                        <button id="prevPageBtn">‹</button>
+                        <button id="nextPageBtn">›</button>
+                        <button id="lastPageBtn">»</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="TabSettings" class="tabcontent">
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">⚙️</span> Pengaturan Proxy
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="autoRotateProxy" checked>
+                            <div>
+                                <label for="autoRotateProxy">Rotasi proxy otomatis saat error</label>
+                                <div class="setting-description">Otomatis beralih ke proxy lain ketika proxy saat ini mengalami error</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="scheduledRotation">
+                            <div>
+                                <label for="scheduledRotation">Rotasi proxy terjadwal</label>
+                                <div class="setting-description">Beralih ke proxy baru secara otomatis berdasarkan interval waktu</div>
+                            </div>
+                        </div>
+                        
+                        <div class="rotation-settings" id="rotationSettings" style="display:none;">
+                            <div class="range-container">
+                                <label style="margin: 0; min-width: 120px;">Interval rotasi:</label>
+                                <input type="range" id="rotationInterval" min="1" max="60" value="5" class="slider">
+                                <div class="range-value" id="rotationIntervalValue">5</div>
+                                <span style="min-width: 40px;">menit</span>
+                            </div>
+                            
+                            <div class="settings-item">
+                                <input type="checkbox" id="randomRotation" checked>
+                                <div>
+                                    <label for="randomRotation">Gunakan proxy acak</label>
+                                    <div class="setting-description">Pilih proxy baru secara acak saat rotasi</div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-item">
+                                <input type="checkbox" id="sequentialRotation">
+                                <div>
+                                    <label for="sequentialRotation">Gunakan proxy secara berurutan</label>
+                                    <div class="setting-description">Rotasi proxy secara berurutan dari daftar</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="testProxyBeforeUse" checked>
+                            <div>
+                                <label for="testProxyBeforeUse">Uji proxy sebelum digunakan</label>
+                                <div class="setting-description">Memastikan proxy berfungsi dengan baik sebelum digunakan</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="useFastestProxy">
+                            <div>
+                                <label for="useFastestProxy">Utamakan proxy tercepat</label>
+                                <div class="setting-description">Secara otomatis memilih proxy dengan kecepatan respons terbaik</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">🖥️</span> Pengaturan Multi-Browser
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="enableMultiBrowser">
+                            <div>
+                                <label for="enableMultiBrowser">Aktifkan mode multi-browser</label>
+                                <div class="setting-description">Membuka beberapa instance browser secara bersamaan</div>
+                            </div>
+                        </div>
+                        
+                        <div id="multiBrowserSettings" style="display:none;">
+                            <div class="multi-browser-container" id="browserInstanceContainer">
+                                <div class="browser-instance">
+                                    <div class="browser-instance-info">
+                                        <strong>Browser 1</strong> - Proxy: <span class="proxy-info">Auto</span>
+                                    </div>
+                                    <div class="browser-instance-actions">
+                                        <button class="small-button select-proxy-btn">Pilih Proxy</button>
+                                        <button class="small-button remove-browser-btn">Hapus</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button id="addBrowserBtn" class="browser-add-btn">+ Tambah Browser Baru</button>
+                            
+                            <div class="settings-item">
+                                <input type="checkbox" id="synchronizeBrowsing">
+                                <div>
+                                    <label for="synchronizeBrowsing">Sinkronisasi penjelajahan</label>
+                                    <div class="setting-description">Membuka URL yang sama di semua instance browser</div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-item">
+                                <input type="checkbox" id="differentProxyPerBrowser" checked>
+                                <div>
+                                    <label for="differentProxyPerBrowser">Proxy berbeda per browser</label>
+                                    <div class="setting-description">Gunakan proxy yang berbeda untuk setiap instance browser</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">👤</span> Simulasi Perilaku Manusia
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="simulateHumanBehavior" checked>
+                            <div>
+                                <label for="simulateHumanBehavior">Aktifkan simulasi perilaku manusia</label>
+                                <div class="setting-description">Mensimulasikan pola browsing alami manusia untuk menghindari deteksi</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Kecepatan Scroll:</label>
+                            <div class="range-container">
+                                <input type="range" id="scrollSpeed" min="1" max="10" value="5" class="slider">
+                                <div class="range-value" id="scrollSpeedValue">5</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Jeda antar aksi (detik):</label>
+                            <div class="range-container">
+                                <input type="range" id="actionDelay" min="1" max="10" value="3" class="slider">
+                                <div class="range-value" id="actionDelayValue">3</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="randomClicks" checked>
+                            <div>
+                                <label for="randomClicks">Klik acak pada elemen</label>
+                                <div class="setting-description">Simulasi klik pada elemen seperti link dan tombol secara acak</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="randomMouse" checked>
+                            <div>
+                                <label for="randomMouse">Gerakan mouse acak</label>
+                                <div class="setting-description">Simulasi pergerakan mouse seperti pengguna manusia normal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="randomScroll" checked>
+                            <div>
+                                <label for="randomScroll">Scroll acak</label>
+                                <div class="setting-description">Simulasi scroll halaman ke atas dan bawah seperti pola pembacaan</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">👓</span> Manajemen Fingerprint Browser
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="enableFingerprinting" checked>
+                            <div>
+                                <label for="enableFingerprinting">Aktifkan rotasi fingerprint</label>
+                                <div class="setting-description">Mengubah fingerprint browser secara otomatis untuk menghindari deteksi</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="fingerprintRotationMode">Mode Rotasi Fingerprint:</label>
+                            <select id="fingerprintRotationMode">
+                                <option value="eachSession">Setiap Sesi</option>
+                                <option value="eachDomain">Setiap Domain</option>
+                                <option value="eachTask">Setiap Tugas</option>
+                                <option value="scheduled">Terjadwal</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="rotateUserAgent" checked>
+                            <div>
+                                <label for="rotateUserAgent">Rotasi User-Agent</label>
+                                <div class="setting-description">Mengubah User-Agent secara acak untuk setiap sesi</div>
+                            </div>
+                        </div>
+                        
+                        <div id="userAgentContainer" style="margin-top: 10px;">
+                            <div class="form-group">
+                                <label for="browserType">Tipe Browser:</label>
+                                <select id="browserType">
+                                    <option value="random">Acak</option>
+                                    <option value="chrome">Chrome</option>
+                                    <option value="firefox">Firefox</option>
+                                    <option value="safari">Safari</option>
+                                    <option value="edge">Edge</option>
+                                    <option value="opera">Opera</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="deviceType">Tipe Perangkat:</label>
+                                <select id="deviceType">
+                                    <option value="random">Acak</option>
+                                    <option value="desktop" selected>Desktop</option>
+                                    <option value="mobile">Mobile</option>
+                                    <option value="tablet">Tablet</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="osType">Sistem Operasi:</label>
+                                <select id="osType">
+                                    <option value="random">Acak</option>
+                                    <option value="windows" selected>Windows</option>
+                                    <option value="macos">macOS</option>
+                                    <option value="linux">Linux</option>
+                                    <option value="android">Android</option>
+                                    <option value="ios">iOS</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="manageCookies" checked>
+                            <div>
+                                <label for="manageCookies">Kelola cookie dan sesi</label>
+                                <div class="setting-description">Mengelola cookie secara cerdas untuk simulasi sesi normal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="cookieStrategy">Strategi Cookie:</label>
+                            <select id="cookieStrategy">
+                                <option value="persistent">Pertahankan antar sesi (per domain)</option>
+                                <option value="session">Pertahankan dalam sesi yang sama</option>
+                                <option value="clear">Hapus semua cookie setiap sesi</option>
+                                <option value="selective">Pertahankan cookie tertentu saja</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="rotateResolution">
+                            <div>
+                                <label for="rotateResolution">Simulasi resolusi layar berbeda</label>
+                                <div class="setting-description">Mengubah dimensi browser untuk menyerupai perangkat berbeda</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="modifyWebRTC">
+                            <div>
+                                <label for="modifyWebRTC">Samarkan WebRTC</label>
+                                <div class="setting-description">Mencegah kebocoran alamat IP asli melalui WebRTC</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="spoofTimezone">
+                            <div>
+                                <label for="spoofTimezone">Samarkan zona waktu</label>
+                                <div class="setting-description">Mengubah zona waktu browser untuk menyesuaikan dengan lokasi proxy</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="spoofCanvas">
+                            <div>
+                                <label for="spoofCanvas">Samarkan Canvas Fingerprint</label>
+                                <div class="setting-description">Menghindari pelacakan melalui HTML5 Canvas Fingerprinting</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">🕒</span> Penjadwalan Canggih
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="enableAdvancedScheduling">
+                            <div>
+                                <label for="enableAdvancedScheduling">Aktifkan penjadwalan canggih</label>
+                                <div class="setting-description">Menggunakan sistem penjadwalan kompleks untuk bot</div>
+                            </div>
+                        </div>
+                        
+                        <div id="advancedSchedulingContainer" style="margin-top: 10px; display: none;">
+                            <div class="form-group">
+                                <label for="schedulingFormat">Format Jadwal:</label>
+                                <select id="schedulingFormat">
+                                    <option value="cron">Format Cron</option>
+                                    <option value="interval">Interval</option>
+                                    <option value="specifichours">Jam Spesifik</option>
+                                </select>
+                            </div>
+                            
+                            <div id="cronScheduleContainer" class="form-group">
+                                <label for="cronExpression">Ekspresi Cron:</label>
+                                <input type="text" id="cronExpression" placeholder="* * * * *" title="Menit Jam HariDalamBulan Bulan HariDalamMinggu">
+                                <div class="setting-description">Format: menit jam tanggal bulan hari-minggu (contoh: 0 */2 * * * = setiap 2 jam)</div>
+                            </div>
+                            
+                            <div id="specificHoursContainer" class="form-group" style="display: none;">
+                                <label>Jam Eksekusi:</label>
+                                <div class="time-slots-container" id="timeSlots">
+                                    <div class="time-slot">
+                                        <input type="time" class="time-input execution-time" value="09:00"> 
+                                        <button class="small-button time-slot-remove">✕</button>
+                                    </div>
+                                    <div class="time-slot">
+                                        <input type="time" class="time-input execution-time" value="15:00"> 
+                                        <button class="small-button time-slot-remove">✕</button>
+                                    </div>
+                                    <div class="time-slot">
+                                        <input type="time" class="time-input execution-time" value="21:00"> 
+                                        <button class="small-button time-slot-remove">✕</button>
+                                    </div>
+                                </div>
+                                <button class="small-button" id="addTimeSlotBtn">+ Tambah Waktu</button>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="timezoneSelect">Zona Waktu:</label>
+                                <select id="timezoneSelect">
+                                    <option value="auto">Otomatis (Lokal)</option>
+                                    <option value="Asia/Jakarta">Asia/Jakarta (WIB)</option>
+                                    <option value="Asia/Makassar">Asia/Makassar (WITA)</option>
+                                    <option value="Asia/Jayapura">Asia/Jayapura (WIT)</option>
+                                    <option value="UTC">UTC</option>
+                                </select>
+                            </div>
+                            
+                            <div class="settings-item">
+                                <input type="checkbox" id="randomizeSchedule" checked>
+                                <div>
+                                    <label for="randomizeSchedule">Acak jadwal</label>
+                                    <div class="setting-description">Tambahkan jeda acak ke jadwal untuk pola yang lebih alami</div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Jitter (Variasi Waktu):</label>
+                                <div class="range-container">
+                                    <input type="range" id="scheduleJitter" min="0" max="60" value="15" class="slider">
+                                    <div class="range-value" id="scheduleJitterValue">±15</div>
+                                    <span style="min-width: 40px;">menit</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="priorityScheduling">
+                            <div>
+                                <label for="priorityScheduling">Jadwal berbasis prioritas</label>
+                                <div class="setting-description">Menjalankan tugas berdasarkan prioritas yang ditentukan</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="activePeriods">
+                            <div>
+                                <label for="activePeriods">Atur periode aktif/nonaktif</label>
+                                <div class="setting-description">Tentukan kapan bot boleh dan tidak boleh aktif</div>
+                            </div>
+                        </div>
+                        
+                        <div id="activePeriodsContainer" style="margin-top: 10px; display: none;">
+                            <div class="form-group">
+                                <label>Jam Aktif:</label>
+                                <div class="time-range-container">
+                                    <input type="time" id="activeTimeStart" value="08:00" class="time-input">
+                                    <span>sampai</span>
+                                    <input type="time" id="activeTimeEnd" value="22:00" class="time-input">
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Hari Aktif:</label>
+                                <div class="day-selector">
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" id="monday" checked>
+                                        <label for="monday">Sen</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" id="tuesday" checked>
+                                        <label for="tuesday">Sel</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" id="wednesday" checked>
+                                        <label for="wednesday">Rab</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" id="thursday" checked>
+                                        <label for="thursday">Kam</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" id="friday" checked>
+                                        <label for="friday">Jum</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" id="saturday">
+                                        <label for="saturday">Sab</label>
+                                    </div>
+                                    <div class="day-checkbox">
+                                        <input type="checkbox" id="sunday">
+                                        <label for="sunday">Min</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="loadBalancing">
+                            <div>
+                                <label for="loadBalancing">Distribusi beban otomatis</label>
+                                <div class="setting-description">Mendistribusikan tugas secara merata sepanjang hari</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">🖥️</span> Pengaturan Browser
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="blockAds" checked>
+                            <div>
+                                <label for="blockAds">Blokir iklan</label>
+                                <div class="setting-description">Menghilangkan iklan dari halaman web yang dibuka</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="blockTrackers" checked>
+                            <div>
+                                <label for="blockTrackers">Blokir pelacak</label>
+                                <div class="setting-description">Mencegah pelacakan aktivitas browsing oleh pihak ketiga</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="clearCookiesOnExit">
+                            <div>
+                                <label for="clearCookiesOnExit">Hapus cookie saat keluar</label>
+                                <div class="setting-description">Menghapus semua cookie dan data sesi saat menutup browser</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">🔒</span> Peningkatan Keamanan
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="enableEncryption" checked>
+                            <div>
+                                <label for="enableEncryption">Enkripsi konfigurasi sensitif</label>
+                                <div class="setting-description">Mengamankan data sensitif seperti kredensial dan konfigurasi proxy</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="failSafeMode" checked>
+                            <div>
+                                <label for="failSafeMode">Mode fail-safe</label>
+                                <div class="setting-description">Secara otomatis menghentikan aktivitas jika terdeteksi risiko pemblokiran</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="failSafeThreshold">Ambang Fail-Safe:</label>
+                            <div class="range-container">
+                                <input type="range" id="failSafeThreshold" min="1" max="10" value="3" class="slider">
+                                <div class="range-value" id="failSafeThresholdValue">3</div>
+                                <span style="min-width: 80px;">kesalahan</span>
+                            </div>
+                            <div class="setting-description">Jumlah kesalahan berturut-turut sebelum mode fail-safe diaktifkan</div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="captchaDetection" checked>
+                            <div>
+                                <label for="captchaDetection">Deteksi CAPTCHA otomatis</label>
+                                <div class="setting-description">Mendeteksi adanya CAPTCHA pada halaman web</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="captchaHandlingContainer">
+                            <label for="captchaHandling">Penanganan CAPTCHA:</label>
+                            <select id="captchaHandling">
+                                <option value="notify">Notifikasi saja</option>
+                                <option value="wait">Tunggu dan coba lagi</option>
+                                <option value="skip">Lewati task</option>
+                                <option value="service" selected>Gunakan layanan penyelesaian</option>
+                                <option value="manual">Minta input manual</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="captchaServiceContainer">
+                            <label for="captchaService">Layanan Penyelesaian CAPTCHA:</label>
+                            <select id="captchaService">
+                                <option value="2captcha">2Captcha</option>
+                                <option value="anticaptcha">Anti-Captcha</option>
+                                <option value="captchateknik">Captcha Teknik</option>
+                                <option value="deathbycaptcha">DeathByCaptcha</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="captchaApiKey">API Key CAPTCHA:</label>
+                            <input type="password" id="captchaApiKey" placeholder="Masukkan API key layanan CAPTCHA">
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="proxyReputation" checked>
+                            <div>
+                                <label for="proxyReputation">Sistem reputasi proxy</label>
+                                <div class="setting-description">Melacak kinerja proxy dan otomatis menandai proxy bermasalah</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="blacklistThreshold">Ambang Blacklist:</label>
+                            <div class="range-container">
+                                <input type="range" id="blacklistThreshold" min="1" max="20" value="5" class="slider">
+                                <div class="range-value" id="blacklistThresholdValue">5</div>
+                                <span style="min-width: 80px;">kegagalan</span>
+                            </div>
+                            <div class="setting-description">Jumlah kegagalan sebelum proxy masuk daftar hitam</div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="securityHeaders">
+                            <div>
+                                <label for="securityHeaders">Modifikasi HTTP headers</label>
+                                <div class="setting-description">Mengubah HTTP headers untuk menghindari deteksi</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="trafficEncryption">
+                            <div>
+                                <label for="trafficEncryption">Enkripsi lalu lintas tambahan</label>
+                                <div class="setting-description">Menambahkan lapisan enkripsi tambahan untuk koneksi proxy</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">🧠</span> Otomatisasi Cerdas
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="enableMachineLearning" checked>
+                            <div>
+                                <label for="enableMachineLearning">Pembelajaran pola keberhasilan</label>
+                                <div class="setting-description">Bot belajar dari pola-pola keberhasilan sebelumnya</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="learningMode">Mode Pembelajaran:</label>
+                            <select id="learningMode">
+                                <option value="passive">Pasif (hanya memantau)</option>
+                                <option value="adaptive" selected>Adaptif (penyesuaian bertahap)</option>
+                                <option value="aggressive">Agresif (penyesuaian cepat)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="proxyOptimization" checked>
+                            <div>
+                                <label for="proxyOptimization">Optimasi rute proxy otomatis</label>
+                                <div class="setting-description">Memilih proxy terbaik berdasarkan performa historis</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="optimizationCriteria">Kriteria Optimasi:</label>
+                            <select id="optimizationCriteria">
+                                <option value="speed">Kecepatan</option>
+                                <option value="success" selected>Tingkat keberhasilan</option>
+                                <option value="balanced">Seimbang</option>
+                                <option value="stealth">Keamanan</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="customScripting">
+                            <div>
+                                <label for="customScripting">Skrip JavaScript kustom</label>
+                                <div class="setting-description">Memungkinkan eksekusi skrip kustom pada halaman web target</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group" id="scriptEditorContainer" style="display: none;">
+                            <label for="scriptEditor">Editor Skrip:</label>
+                            <div style="position: relative;">
+                                <textarea id="scriptEditor" class="multi-input" style="height: 150px; font-family: monospace;" placeholder="// Tulis kode JavaScript kustom di sini
+// Contoh:
+document.querySelectorAll('a.product-link').forEach(link => {
+  console.log(link.href);
+});"></textarea>
+                                <div style="position: absolute; bottom: 5px; right: 5px;">
+                                    <button class="small-button" id="saveScriptBtn">Simpan</button>
+                                    <button class="small-button" id="testScriptBtn">Uji</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="autoFormDetection" checked>
+                            <div>
+                                <label for="autoFormDetection">Deteksi formulir otomatis</label>
+                                <div class="setting-description">Otomatis mendeteksi dan mengidentifikasi elemen formulir</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="formDetectionLevel">Tingkat Deteksi Form:</label>
+                            <select id="formDetectionLevel">
+                                <option value="basic">Dasar (hanya input standar)</option>
+                                <option value="advanced" selected>Lanjutan (termasuk formulir dinamis)</option>
+                                <option value="aggressive">Agresif (termasuk formulir tersembunyi)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="intelligentNavigation">
+                            <div>
+                                <label for="intelligentNavigation">Navigasi cerdas</label>
+                                <div class="setting-description">Menemukan dan mengikuti jalur navigasi yang paling efisien</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="errorRecovery" checked>
+                            <div>
+                                <label for="errorRecovery">Pemulihan error otomatis</label>
+                                <div class="setting-description">Secara cerdas mencoba strategi berbeda saat menghadapi error</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="recoveryStrategies">Strategi Pemulihan:</label>
+                            <select id="recoveryStrategies" multiple size="3">
+                                <option value="refresh" selected>Refresh halaman</option>
+                                <option value="wait" selected>Tunggu dan coba lagi</option>
+                                <option value="proxy" selected>Ganti proxy</option>
+                                <option value="userAgent">Ganti User-Agent</option>
+                                <option value="cookies">Hapus cookies</option>
+                                <option value="alternate">Jalur navigasi alternatif</option>
+                            </select>
+                            <div class="setting-description">Tahan Ctrl untuk memilih beberapa opsi</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="TabAPI" class="tabcontent">
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">🔄</span> Integrasi API
+                    </div>
+                    <div class="settings-group">
+                        <div class="form-group">
+                            <label for="apiEndpoint">URL Endpoint API:</label>
+                            <input type="url" id="apiEndpoint" placeholder="https://api.example.com/webhook">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="apiKey">API Key:</label>
+                            <div style="display: flex; gap: 10px;">
+                                <input type="password" id="apiKey" placeholder="Masukkan API key Anda">
+                                <button class="small-button" id="showApiKeyBtn">Tampilkan</button>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="enableApiSync" checked>
+                            <div>
+                                <label for="enableApiSync">Aktifkan sinkronisasi API</label>
+                                <div class="setting-description">Secara otomatis sinkronkan tugas dan hasil dengan API eksternal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Interval Sinkronisasi:</label>
+                            <div class="range-container">
+                                <input type="range" id="syncInterval" min="1" max="60" value="5" class="slider">
+                                <div class="range-value" id="syncIntervalValue">5</div>
+                                <span style="min-width: 40px;">menit</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">📤</span> Pengiriman Data
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="sendScrapingResults" checked>
+                            <div>
+                                <label for="sendScrapingResults">Kirim hasil scraping</label>
+                                <div class="setting-description">Otomatis mengirim data hasil scraping ke endpoint API</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="sendTaskStatus" checked>
+                            <div>
+                                <label for="sendTaskStatus">Kirim status tugas</label>
+                                <div class="setting-description">Melaporkan kemajuan dan status tugas ke API Anda</div>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-item">
+                            <input type="checkbox" id="sendProxyStats">
+                            <div>
+                                <label for="sendProxyStats">Kirim statistik proxy</label>
+                                <div class="setting-description">Melaporkan kinerja dan statistik proxy ke API Anda</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="dataFormat">Format Data:</label>
+                            <select id="dataFormat">
+                                <option value="json">JSON (default)</option>
+                                <option value="xml">XML</option>
+                                <option value="csv">CSV</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">📥</span> Penerimaan Tugas
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="fetchRemoteTasks">
+                            <div>
+                                <label for="fetchRemoteTasks">Ambil tugas dari remote</label>
+                                <div class="setting-description">Menerima tugas baru dari API secara otomatis</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="remoteTasksEndpoint">Endpoint Tugas:</label>
+                            <input type="url" id="remoteTasksEndpoint" placeholder="https://api.example.com/tasks">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Interval Pemeriksaan:</label>
+                            <div class="range-container">
+                                <input type="range" id="taskCheckInterval" min="1" max="60" value="15" class="slider">
+                                <div class="range-value" id="taskCheckIntervalValue">15</div>
+                                <span style="min-width: 40px;">menit</span>
+                            </div>
+                        </div>
+                        
+                        <button id="testApiConnectionBtn">Uji Koneksi API</button>
+                    </div>
+                </div>
+                
+                <div class="settings-section">
+                    <div class="settings-title">
+                        <span class="settings-title-icon">🔄</span> Sumber Proxy API
+                    </div>
+                    <div class="settings-group">
+                        <div class="settings-item">
+                            <input type="checkbox" id="fetchProxiesFromApi">
+                            <div>
+                                <label for="fetchProxiesFromApi">Perbarui proxy dari API</label>
+                                <div class="setting-description">Secara otomatis memperbarui daftar proxy dari API eksternal</div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="proxyApiEndpoint">Endpoint Proxy API:</label>
+                            <input type="url" id="proxyApiEndpoint" placeholder="https://api.example.com/proxies">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Interval Pembaruan:</label>
+                            <div class="range-container">
+                                <input type="range" id="proxyUpdateInterval" min="1" max="24" value="6" class="slider">
+                                <div class="range-value" id="proxyUpdateIntervalValue">6</div>
+                                <span style="min-width: 40px;">jam</span>
+                            </div>
+                        </div>
+                        
+                        <button id="updateProxiesNowBtn">Perbarui Proxy Sekarang</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="TabAnalytics" class="tabcontent">
+                <div class="analytics-dashboard">
+                    <div class="dashboard-header">
+                        <h3>Dashboard Analitik</h3>
+                        <div class="dashboard-time-range">
+                            <select id="timeRangeSelect">
+                                <option value="day">Hari Ini</option>
+                                <option value="week" selected>Minggu Ini</option>
+                                <option value="month">Bulan Ini</option>
+                                <option value="custom">Kustom</option>
+                            </select>
+                            <div id="customDateRange" style="display: none; margin-left: 10px;">
+                                <input type="date" id="startDate"> - <input type="date" id="endDate">
+                                <button class="small-button" id="applyDateRangeBtn">Terapkan</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="statistics-grid">
+                        <div class="stat-card large-stat">
+                            <div class="stat-title">Total Tugas</div>
+                            <div class="stat-value" id="totalTasksValue">124</div>
+                            <div class="stat-chart" id="tasksChart"></div>
+                        </div>
+                        <div class="stat-card large-stat">
+                            <div class="stat-title">Tingkat Kesuksesan</div>
+                            <div class="stat-value" id="successRateValue">94.2%</div>
+                            <div class="stat-chart" id="successRateChart"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Tugas Selesai</div>
+                            <div class="stat-value" id="completedTasksValue">117</div>
+                            <div class="stat-trend positive">↑ 12.4%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Tugas Gagal</div>
+                            <div class="stat-value" id="failedTasksValue">7</div>
+                            <div class="stat-trend negative">↑ 2.1%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Rotasi Proxy</div>
+                            <div class="stat-value" id="proxyRotationsValue">284</div>
+                            <div class="stat-trend">↓ 5.3%</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-title">Deteksi CAPTCHA</div>
+                            <div class="stat-value" id="captchaDetectionsValue">14</div>
+                            <div class="stat-trend negative">↑ 3.7%</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h4>Aktivitas Tugas</h4>
+                            <select id="taskMetricSelect">
+                                <option value="count">Jumlah</option>
+                                <option value="success">Kesuksesan</option>
+                                <option value="duration">Durasi</option>
+                            </select>
+                        </div>
+                        <div class="chart-body" id="taskActivityChart">
+                            <!-- Chart will be rendered here -->
+                            <div class="placeholder-chart">Grafik aktivitas tugas akan ditampilkan di sini</div>
+                        </div>
+                    </div>
+                    
+                    <div class="analytics-grid">
+                        <div class="analytics-panel">
+                            <div class="panel-header">
+                                <h4>Performa Proxy</h4>
+                                <button class="small-button" id="exportProxyStatsBtn">Ekspor</button>
+                            </div>
+                            <div class="panel-body">
+                                <table class="data-table" id="proxyPerformanceTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Proxy</th>
+                                            <th>Sukses</th>
+                                            <th>Gagal</th>
+                                            <th>Waktu Resp.</th>
+                                            <th>Penggunaan</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>103.126.12.88:80</td>
+                                            <td>94%</td>
+                                            <td>6%</td>
+                                            <td>212ms</td>
+                                            <td>42</td>
+                                        </tr>
+                                        <tr>
+                                            <td>36.91.148.36:8080</td>
+                                            <td>87%</td>
+                                            <td>13%</td>
+                                            <td>354ms</td>
+                                            <td>28</td>
+                                        </tr>
+                                        <tr>
+                                            <td>36.95.27.209:8080</td>
+                                            <td>92%</td>
+                                            <td>8%</td>
+                                            <td>287ms</td>
+                                            <td>36</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <div class="analytics-panel">
+                            <div class="panel-header">
+                                <h4>Histori Aktivitas</h4>
+                                <div>
+                                    <input type="text" id="activitySearchInput" placeholder="Cari..." style="padding: 5px; width: 150px;">
+                                    <button class="small-button" id="exportActivityLogBtn">Ekspor</button>
+                                </div>
+                            </div>
+                            <div class="panel-body">
+                                <table class="data-table" id="activityHistoryTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Waktu</th>
+                                            <th>Jenis</th>
+                                            <th>Deskripsi</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>12:45:22</td>
+                                            <td>Tugas</td>
+                                            <td>Kunjungan ke example.com</td>
+                                            <td><span class="badge badge-success">Sukses</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>12:42:15</td>
+                                            <td>Proxy</td>
+                                            <td>Rotasi ke 36.95.27.209:8080</td>
+                                            <td><span class="badge badge-info">Info</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>12:40:05</td>
+                                            <td>Tugas</td>
+                                            <td>Isi form login.php</td>
+                                            <td><span class="badge badge-error">Gagal</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="export-section">
+                        <h4>Ekspor Data Analitik</h4>
+                        <div class="export-options">
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label for="exportType">Pilih Jenis Data:</label>
+                                <select id="exportType">
+                                    <option value="tasks">Tugas</option>
+                                    <option value="proxies">Proxy</option>
+                                    <option value="activity">Aktivitas</option>
+                                    <option value="scraping">Hasil Scraping</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label for="exportFormat">Format:</label>
+                                <select id="exportFormat">
+                                    <option value="csv">CSV</option>
+                                    <option value="json">JSON</option>
+                                    <option value="excel">Excel</option>
+                                </select>
+                            </div>
+                            <button id="generateReportBtn">Buat Laporan</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="TabLogs" class="tabcontent">
+                <h3>Log Aktivitas</h3>
+                <button id="clearLogsBtn">Bersihkan Log</button>
+                <div class="logs-container" id="logsContainer">
+                    <!-- Log entries will be added here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Variabel global
+        let currentProxy = null;
+        let proxyList = [];
+        let isSimulating = false;
+        let simulationInterval = null;
+        let currentPage = 1;
+        let proxiesPerPage = 50;
+        let totalPages = 1;
+        let rotationTimer = null;
+        let multiInstanceBrowsers = 1;
+        let botRunning = false;
+        let botPaused = false;
+        let tasks = [];
+        let currentTaskIndex = 0;
+        let stats = {
+            tasksCompleted: 0,
+            proxyRotations: 0,
+            requestCount: 0,
+            errorCount: 0
+        };
+        
+        // DOM Elements
+        const urlInput = document.getElementById('urlInput');
+        const goBtn = document.getElementById('goBtn');
+        const webview = document.getElementById('webview');
+        const loader = document.getElementById('loader');
+        const backBtn = document.getElementById('backBtn');
+        const forwardBtn = document.getElementById('forwardBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const refreshProxiesBtn = document.getElementById('refreshProxiesBtn');
+        const proxySourceSelect = document.getElementById('proxySource');
+        const proxyListContainer = document.getElementById('proxyList');
+        const notificationArea = document.getElementById('notificationArea');
+        const logsContainer = document.getElementById('logsContainer');
+        const clearLogsBtn = document.getElementById('clearLogsBtn');
+        
+        // Pengaturan sliders
+        const scrollSpeedSlider = document.getElementById('scrollSpeed');
+        const scrollSpeedValue = document.getElementById('scrollSpeedValue');
+        const actionDelaySlider = document.getElementById('actionDelay');
+        const actionDelayValue = document.getElementById('actionDelayValue');
+        
+        // DOM Elements tambahan
+        const bulkUrlInput = document.getElementById('bulkUrlInput');
+        const toggleBatchUrlBtn = document.getElementById('toggleBatchUrlBtn');
+        const batchUrlContainer = document.getElementById('batchUrlContainer');
+        const openAllUrlsBtn = document.getElementById('openAllUrlsBtn');
+        const openSequentialBtn = document.getElementById('openSequentialBtn');
+        const batchDelay = document.getElementById('batchDelay');
+        const importProxiesBtn = document.getElementById('importProxiesBtn');
+        const exportProxiesBtn = document.getElementById('exportProxiesBtn');
+        const importProxyContainer = document.getElementById('importProxyContainer');
+        const bulkProxyInput = document.getElementById('bulkProxyInput');
+        const saveBulkProxyBtn = document.getElementById('saveBulkProxyBtn');
+        const proxySearchInput = document.getElementById('proxySearchInput');
+        const proxySearchBtn = document.getElementById('proxySearchBtn');
+        const scheduledRotation = document.getElementById('scheduledRotation');
+        const rotationSettings = document.getElementById('rotationSettings');
+        const rotationInterval = document.getElementById('rotationInterval');
+        const rotationIntervalValue = document.getElementById('rotationIntervalValue');
+        const randomRotation = document.getElementById('randomRotation');
+        const sequentialRotation = document.getElementById('sequentialRotation');
+        const enableMultiBrowser = document.getElementById('enableMultiBrowser');
+        const multiBrowserSettings = document.getElementById('multiBrowserSettings');
+        const browserInstanceContainer = document.getElementById('browserInstanceContainer');
+        const addBrowserBtn = document.getElementById('addBrowserBtn');
+        const synchronizeBrowsing = document.getElementById('synchronizeBrowsing');
+        const differentProxyPerBrowser = document.getElementById('differentProxyPerBrowser');
+        
+        // Pagination elements
+        const proxyStartRange = document.getElementById('proxyStartRange');
+        const proxyEndRange = document.getElementById('proxyEndRange');
+        const totalProxies = document.getElementById('totalProxies');
+        const firstPageBtn = document.getElementById('firstPageBtn');
+        const prevPageBtn = document.getElementById('prevPageBtn');
+        const nextPageBtn = document.getElementById('nextPageBtn');
+        const lastPageBtn = document.getElementById('lastPageBtn');
+        
+        // DOM Elements untuk Bot
+        const botStatusIndicator = document.getElementById('botStatusIndicator');
+        const botStatusText = document.getElementById('botStatusText');
+        const activeProxyText = document.getElementById('activeProxyText');
+        const startBotBtn = document.getElementById('startBotBtn');
+        const pauseBotBtn = document.getElementById('pauseBotBtn');
+        const stopBotBtn = document.getElementById('stopBotBtn');
+        const taskCompletedCount = document.getElementById('taskCompletedCount');
+        const proxyRotationCount = document.getElementById('proxyRotationCount');
+        const requestCount = document.getElementById('requestCount');
+        const errorCount = document.getElementById('errorCount');
+        const taskListContainer = document.getElementById('taskListContainer');
+        const addTaskBtn = document.getElementById('addTaskBtn');
+        const addTaskModal = document.getElementById('addTaskModal');
+        const saveTaskBtn = document.getElementById('saveTaskBtn');
+        const cancelTaskBtn = document.getElementById('cancelTaskBtn');
+        const taskConfigSummary = document.getElementById('taskConfigSummary');
+        const proxyConfigSummary = document.getElementById('proxyConfigSummary');
+        const configTaskBtn = document.getElementById('configTaskBtn');
+        const configProxyBtn = document.getElementById('configProxyBtn');
+        
+        // Tambahan untuk konfigurasi tugas
+        const operationVisitRadio = document.getElementById('operationVisit');
+        const operationFormRadio = document.getElementById('operationForm');
+        const operationScrapRadio = document.getElementById('operationScrap');
+        const formFillConfig = document.getElementById('formFillConfig');
+        const scrapConfig = document.getElementById('scrapConfig');
+        const toggleAdvancedSettingsBtn = document.getElementById('toggleAdvancedSettings');
+        const advancedSettingsContent = document.getElementById('advancedSettingsContent');
+        const scheduleTaskCheckbox = document.getElementById('scheduleTask');
+        const scheduleSettings = document.getElementById('scheduleSettings');
+        const taskSpecificProxyCheckbox = document.getElementById('taskSpecificProxy');
+        const proxySettings = document.getElementById('proxySettings');
+        const exportTaskConfigBtn = document.getElementById('exportTaskConfigBtn');
+        const importTaskConfigBtn = document.getElementById('importTaskConfigBtn');
+        
+        // Event listeners untuk jenis operasi
+        operationVisitRadio.addEventListener('change', function() {
+            if (this.checked) {
+                formFillConfig.style.display = 'none';
+                scrapConfig.style.display = 'none';
+            }
+        });
+        
+        operationFormRadio.addEventListener('change', function() {
+            if (this.checked) {
+                formFillConfig.style.display = 'block';
+                scrapConfig.style.display = 'none';
+            }
+        });
+        
+        operationScrapRadio.addEventListener('change', function() {
+            if (this.checked) {
+                formFillConfig.style.display = 'none';
+                scrapConfig.style.display = 'block';
+            }
+        });
+        
+        // Toggle pengaturan lanjutan
+        toggleAdvancedSettingsBtn.addEventListener('click', function() {
+            if (advancedSettingsContent.style.display === 'none') {
+                advancedSettingsContent.style.display = 'block';
+                this.textContent = 'Sembunyikan';
+            } else {
+                advancedSettingsContent.style.display = 'none';
+                this.textContent = 'Tampilkan';
+            }
+        });
+        
+        // Toggle pengaturan jadwal
+        scheduleTaskCheckbox.addEventListener('change', function() {
+            scheduleSettings.style.display = this.checked ? 'block' : 'none';
+        });
+        
+        // Toggle pengaturan proxy
+        taskSpecificProxyCheckbox.addEventListener('change', function() {
+            proxySettings.style.display = this.checked ? 'block' : 'none';
+        });
+        
+        // Ekspor konfigurasi tugas
+        exportTaskConfigBtn.addEventListener('click', function() {
+            // Ambil nilai dari semua input
+            const taskConfig = {
+                name: document.getElementById('taskName').value,
+                url: document.getElementById('taskUrl').value,
+                type: operationVisitRadio.checked ? 'visit' : 
+                      operationFormRadio.checked ? 'form' : 'scrap',
+                formConfig: {
+                    selector: document.getElementById('formSelector').value,
+                    data: document.getElementById('formData').value,
+                    submitSelector: document.getElementById('submitSelector').value
+                },
+                scrapConfig: {
+                    selectors: document.getElementById('scrapSelectors').value,
+                    pagination: document.getElementById('scrapPagination').value,
+                    maxPages: document.getElementById('scrapMaxPages').value
+                },
+                advanced: {
+                    schedule: {
+                        enabled: document.getElementById('scheduleTask').checked,
+                        startTime: document.getElementById('scheduleStartTime').value,
+                        endTime: document.getElementById('scheduleEndTime').value,
+                        interval: document.getElementById('scheduleInterval').value
+                    },
+                    proxy: {
+                        useSpecific: document.getElementById('taskSpecificProxy').checked,
+                        proxyId: document.getElementById('taskProxyList').value,
+                        rotateOnError: document.getElementById('taskRotateProxy').checked
+                    },
+                    behavior: {
+                        randomDelay: document.getElementById('taskRandomDelay').checked,
+                        minDelay: document.getElementById('minDelay').value,
+                        maxDelay: document.getElementById('maxDelay').value
+                    },
+                    error: {
+                        retry: document.getElementById('retryOnError').checked,
+                        maxRetries: document.getElementById('maxRetries').value
+                    }
+                }
+            };
+            
+            // Konversi ke JSON
+            const jsonConfig = JSON.stringify(taskConfig, null, 2);
+            
+            // Buat dan unduh file
+            const blob = new Blob([jsonConfig], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'task-config.json';
+            document.body.appendChild(a);
+            a.click();
+            
+            // Cleanup
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 0);
+            
+            addLogEntry('Konfigurasi tugas diekspor');
+            showNotification('Konfigurasi tugas berhasil diekspor', 'success');
+        });
+        
+        // Impor konfigurasi tugas
+        importTaskConfigBtn.addEventListener('click', function() {
+            // Buat input file tersembunyi
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'application/json';
+            fileInput.style.display = 'none';
+            
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const config = JSON.parse(e.target.result);
+                        
+                        // Isi form dengan data yang diimpor
+                        document.getElementById('taskName').value = config.name || '';
+                        document.getElementById('taskUrl').value = config.url || '';
+                        
+                        // Set jenis operasi
+                        if (config.type === 'visit') operationVisitRadio.checked = true;
+                        else if (config.type === 'form') operationFormRadio.checked = true;
+                        else if (config.type === 'scrap') operationScrapRadio.checked = true;
+                        
+                        // Trigger change event untuk menampilkan/menyembunyikan form
+                        const event = new Event('change');
+                        if (config.type === 'form') operationFormRadio.dispatchEvent(event);
+                        else if (config.type === 'scrap') operationScrapRadio.dispatchEvent(event);
+                        else operationVisitRadio.dispatchEvent(event);
+                        
+                        // Isi form config jika ada
+                        if (config.formConfig) {
+                            document.getElementById('formSelector').value = config.formConfig.selector || '';
+                            document.getElementById('formData').value = config.formConfig.data || '';
+                            document.getElementById('submitSelector').value = config.formConfig.submitSelector || '';
+                        }
+                        
+                        // Isi scrap config jika ada
+                        if (config.scrapConfig) {
+                            document.getElementById('scrapSelectors').value = config.scrapConfig.selectors || '';
+                            document.getElementById('scrapPagination').value = config.scrapConfig.pagination || '';
+                            document.getElementById('scrapMaxPages').value = config.scrapConfig.maxPages || 1;
+                        }
+                        
+                        // Isi advanced settings jika ada
+                        if (config.advanced) {
+                            // Jadwal
+                            if (config.advanced.schedule) {
+                                document.getElementById('scheduleTask').checked = config.advanced.schedule.enabled || false;
+                                document.getElementById('scheduleStartTime').value = config.advanced.schedule.startTime || '';
+                                document.getElementById('scheduleEndTime').value = config.advanced.schedule.endTime || '';
+                                document.getElementById('scheduleInterval').value = config.advanced.schedule.interval || 30;
+                                scheduleSettings.style.display = config.advanced.schedule.enabled ? 'block' : 'none';
+                            }
+                            
+                            // Proxy
+                            if (config.advanced.proxy) {
+                                document.getElementById('taskSpecificProxy').checked = config.advanced.proxy.useSpecific || false;
+                                document.getElementById('taskProxyList').value = config.advanced.proxy.proxyId || 'random';
+                                document.getElementById('taskRotateProxy').checked = config.advanced.proxy.rotateOnError || false;
+                                proxySettings.style.display = config.advanced.proxy.useSpecific ? 'block' : 'none';
+                            }
+                            
+                            // Behavior
+                            if (config.advanced.behavior) {
+                                document.getElementById('taskRandomDelay').checked = config.advanced.behavior.randomDelay || false;
+                                document.getElementById('minDelay').value = config.advanced.behavior.minDelay || 2;
+                                document.getElementById('maxDelay').value = config.advanced.behavior.maxDelay || 10;
+                            }
+                            
+                            // Error
+                            if (config.advanced.error) {
+                                document.getElementById('retryOnError').checked = config.advanced.error.retry || false;
+                                document.getElementById('maxRetries').value = config.advanced.error.maxRetries || 3;
+                            }
+                            
+                            // Tampilkan pengaturan lanjutan
+                            advancedSettingsContent.style.display = 'block';
+                            toggleAdvancedSettingsBtn.textContent = 'Sembunyikan';
+                        }
+                        
+                        addLogEntry('Konfigurasi tugas diimpor');
+                        showNotification('Konfigurasi tugas berhasil diimpor', 'success');
+                    } catch (error) {
+                        addLogEntry(`Error saat mengimpor konfigurasi: ${error.message}`, 'error');
+                        showNotification('Format file konfigurasi tidak valid', 'error');
+                    }
+                };
+                
+                reader.readAsText(file);
+            });
+            
+            document.body.appendChild(fileInput);
+            fileInput.click();
+            
+            // Cleanup
+            setTimeout(() => {
+                document.body.removeChild(fileInput);
+            }, 0);
+        });
+        
+        // Simpan tugas dengan konfigurasi yang lebih lengkap
+        saveTaskBtn.addEventListener('click', function() {
+            const taskName = document.getElementById('taskName').value;
+            const taskUrl = document.getElementById('taskUrl').value;
+            
+            if (!taskName) {
+                showNotification('Masukkan nama tugas', 'error');
+                return;
+            }
+            
+            if (!taskUrl) {
+                showNotification('Masukkan URL target', 'error');
+                return;
+            }
+            
+            // Tentukan jenis operasi
+            let operationType = 'visit';
+            if (document.getElementById('operationForm').checked) {
+                operationType = 'form';
+            } else if (document.getElementById('operationScrap').checked) {
+                operationType = 'scrap';
+            }
+            
+            // Buat objek tugas
+            const task = {
+                name: taskName,
+                url: taskUrl,
+                type: operationType,
+                status: 'pending',
+                progress: 0,
+                created: new Date().toISOString()
+            };
+            
+            // Tambahkan konfigurasi tambahan berdasarkan jenis operasi
+            if (operationType === 'form') {
+                task.formConfig = {
+                    selector: document.getElementById('formSelector').value,
+                    data: document.getElementById('formData').value,
+                    submitSelector: document.getElementById('submitSelector').value
+                };
+            } else if (operationType === 'scrap') {
+                task.scrapConfig = {
+                    selectors: document.getElementById('scrapSelectors').value,
+                    pagination: document.getElementById('scrapPagination').value,
+                    maxPages: document.getElementById('scrapMaxPages').value
+                };
+            }
+            
+            // Tambahkan pengaturan lanjutan jika diaktifkan
+            if (advancedSettingsContent.style.display === 'block') {
+                task.advanced = {
+                    schedule: {
+                        enabled: document.getElementById('scheduleTask').checked,
+                        startTime: document.getElementById('scheduleStartTime').value,
+                        endTime: document.getElementById('scheduleEndTime').value,
+                        interval: document.getElementById('scheduleInterval').value
+                    },
+                    proxy: {
+                        useSpecific: document.getElementById('taskSpecificProxy').checked,
+                        proxyId: document.getElementById('taskProxyList').value,
+                        rotateOnError: document.getElementById('taskRotateProxy').checked
+                    },
+                    behavior: {
+                        randomDelay: document.getElementById('taskRandomDelay').checked,
+                        minDelay: document.getElementById('minDelay').value,
+                        maxDelay: document.getElementById('maxDelay').value
+                    },
+                    error: {
+                        retry: document.getElementById('retryOnError').checked,
+                        maxRetries: document.getElementById('maxRetries').value
+                    }
+                };
+            }
+            
+            // Tambahkan tugas ke daftar
+            tasks.push(task);
+            
+            // Render ulang daftar tugas
+            renderTasks();
+            
+            // Sembunyikan modal
+            addTaskModal.style.display = 'none';
+            
+            // Reset form
+            document.getElementById('taskName').value = '';
+            document.getElementById('taskUrl').value = '';
+            document.getElementById('formSelector').value = '';
+            document.getElementById('formData').value = '';
+            document.getElementById('submitSelector').value = '';
+            document.getElementById('scrapSelectors').value = '';
+            document.getElementById('scrapPagination').value = '';
+            document.getElementById('scrapMaxPages').value = '1';
+            
+            addLogEntry(`Tugas baru ditambahkan: ${taskName}`);
+            showNotification(`Tugas "${taskName}" berhasil ditambahkan`, 'success');
+        });
+        
+        // Update render tasks untuk menampilkan nama tugas
+        function renderTasks() {
+            taskListContainer.innerHTML = '';
+            
+            if (tasks.length === 0) {
+                taskListContainer.innerHTML = '<p>Belum ada tugas. Klik "Tambah Tugas" untuk menambahkan tugas baru.</p>';
+                return;
+            }
+            
+            tasks.forEach((task, index) => {
+                const taskElement = document.createElement('div');
+                taskElement.className = 'task-item';
+                
+                // Tentukan kelas berdasarkan status
+                if (task.status === 'running') {
+                    taskElement.style.borderLeft = '3px solid var(--warning-color)';
+                } else if (task.status === 'completed') {
+                    taskElement.style.borderLeft = '3px solid var(--success-color)';
+                } else if (task.status === 'failed') {
+                    taskElement.style.borderLeft = '3px solid var(--error-color)';
+                }
+                
+                // Jadwal info jika diaktifkan
+                let scheduleInfo = '';
+                if (task.advanced && task.advanced.schedule && task.advanced.schedule.enabled) {
+                    scheduleInfo = `<div style="font-size: 11px; margin-top: 5px; opacity: 0.7;">Jadwal: ${task.advanced.schedule.startTime} - ${task.advanced.schedule.endTime}</div>`;
+                }
+                
+                taskElement.innerHTML = `
+                    <div class="task-info">
+                        <div><strong>${task.name}</strong></div>
+                        <div style="font-size: 12px; opacity: 0.9;">${task.url}</div>
+                        <div style="font-size: 12px; opacity: 0.7;">Tipe: ${capitalizeFirstLetter(task.type)}</div>
+                        ${scheduleInfo}
+                    </div>
+                    <div class="task-progress">
+                        <div class="task-progress-bar" style="width: ${task.progress}%;"></div>
+                    </div>
+                    <div>
+                        <button class="small-button edit-task-btn" data-index="${index}">Edit</button>
+                        <button class="small-button delete-task-btn" data-index="${index}">Hapus</button>
+                    </div>
+                `;
+                
+                taskListContainer.appendChild(taskElement);
+            });
+            
+            // Tambahkan event listener
+            document.querySelectorAll('.edit-task-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const taskIndex = parseInt(this.getAttribute('data-index'));
+                    editTask(taskIndex);
+                });
+            });
+            
+            document.querySelectorAll('.delete-task-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const taskIndex = parseInt(this.getAttribute('data-index'));
+                    deleteTask(taskIndex);
+                });
+            });
+        }
+
+        // Fungsi untuk menangani tabs
+        function openTab(evt, tabName) {
+            let i, tabcontent, tablinks;
+            
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            
+            document.getElementById(tabName).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+        
+        // Fungsi untuk menampilkan notifikasi
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.textContent = message;
+            
+            notificationArea.appendChild(notification);
+            
+            // Hapus notifikasi setelah 5 detik
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+        
+        // Fungsi untuk menambahkan log aktivitas
+        function addLogEntry(text, type = 'info') {
+            const now = new Date();
+            const timestamp = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}.${now.getMilliseconds().toString().padStart(3, '0')}`;
+            
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = `<span class="log-timestamp">[${timestamp}]</span><span class="log-text">${text}</span>`;
+            
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+        
+        // Fungsi untuk memuat daftar proxy
+        function loadProxies(source = 'all') {
+            loader.style.display = 'block';
+            addLogEntry('Memuat daftar proxy dari sumber: ' + source);
+            
+            // Simulasi memuat proxy
+            setTimeout(() => {
+                const mockProxies = [
+                    { ip: '103.126.12.88', port: '80', country: 'Indonesia', anonymity: 'high', speed: 95, lastChecked: '1 menit lalu', source: 'free-proxy-list', status: 'online' },
+                    { ip: '36.91.148.36', port: '8080', country: 'Indonesia', anonymity: 'medium', speed: 87, lastChecked: '3 menit lalu', source: 'spys-one', status: 'online' },
+                    { ip: '36.95.27.209', port: '8080', country: 'Indonesia', anonymity: 'medium', speed: 82, lastChecked: '5 menit lalu', source: 'geonode', status: 'online' },
+                    { ip: '103.19.59.26', port: '8080', country: 'Indonesia', anonymity: 'low', speed: 78, lastChecked: '7 menit lalu', source: 'proxyscrape', status: 'online' },
+                    { ip: '182.253.21.26', port: '46977', country: 'Indonesia', anonymity: 'high', speed: 65, lastChecked: '10 menit lalu', source: 'proxynova', status: 'offline' },
+                    { ip: '103.11.106.27', port: '8181', country: 'Indonesia', anonymity: 'high', speed: 88, lastChecked: '12 menit lalu', source: 'free-proxy-list', status: 'online' },
+                    { ip: '36.94.58.26', port: '8080', country: 'Indonesia', anonymity: 'medium', speed: 71, lastChecked: '15 menit lalu', source: 'spys-one', status: 'online' },
+                    { ip: '180.178.93.219', port: '80', country: 'Indonesia', anonymity: 'low', speed: 93, lastChecked: '18 menit lalu', source: 'geonode', status: 'online' }
+                ];
+                
+                // Filter berdasarkan sumber jika perlu
+                proxyList = source === 'all' ? mockProxies : mockProxies.filter(proxy => proxy.source === source);
+                
+                // Render daftar proxy
+                renderProxyList();
+                
+                loader.style.display = 'none';
+                addLogEntry(`Berhasil memuat ${proxyList.length} proxy`);
+                showNotification(`${proxyList.length} proxy telah dimuat`, 'success');
+            }, 1500);
+        }
+        
+        // Fungsi untuk merender daftar proxy
+        function renderProxyList(proxiesToRender = proxyList) {
+            proxyListContainer.innerHTML = '';
+            
+            if (proxiesToRender.length === 0) {
+                proxyListContainer.innerHTML = '<p>Tidak ada proxy tersedia dari sumber yang dipilih.</p>';
+                updatePaginationInfo();
+                return;
+            }
+            
+            // Hitung awal dan akhir untuk paginasi
+            const start = (currentPage - 1) * proxiesPerPage;
+            const end = Math.min(start + proxiesPerPage, proxiesToRender.length);
+            const pageProxies = proxiesToRender.slice(start, end);
+            
+            pageProxies.forEach(proxy => {
+                const proxyCard = document.createElement('div');
+                proxyCard.className = 'proxy-card';
+                
+                const statusClass = proxy.status === 'online' ? 'status-online' : 'status-offline';
+                
+                proxyCard.innerHTML = `
+                    <div class="proxy-info">
+                        <span class="proxy-status ${statusClass}"></span>
+                        <strong>${proxy.ip}:${proxy.port}</strong> (${proxy.country})
+                        <div class="proxy-stats">
+                            Anonymity: ${proxy.anonymity} | 
+                            Speed: ${proxy.speed}% | 
+                            Last checked: ${proxy.lastChecked} | 
+                            Source: ${proxy.source}
+                        </div>
+                    </div>
+                    <div class="proxy-actions">
+                        <button class="use-proxy-btn" data-ip="${proxy.ip}" data-port="${proxy.port}">Gunakan</button>
+                        <button class="test-proxy-btn" data-ip="${proxy.ip}" data-port="${proxy.port}">Uji</button>
+                    </div>
+                `;
+                
+                proxyListContainer.appendChild(proxyCard);
+            });
+            
+            // Update pagination
+            updatePaginationInfo();
+            
+            // Tambahkan event listener ke tombol-tombol
+            document.querySelectorAll('.use-proxy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const ip = this.getAttribute('data-ip');
+                    const port = this.getAttribute('data-port');
+                    useProxy(ip, port);
+                });
+            });
+            
+            document.querySelectorAll('.test-proxy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const ip = this.getAttribute('data-ip');
+                    const port = this.getAttribute('data-port');
+                    testProxy(ip, port);
+                });
+            });
+        }
+        
+        // Fungsi untuk menggunakan proxy tertentu
+        function useProxy(ip, port) {
+            const proxy = proxyList.find(p => p.ip === ip && p.port === port);
+            
+            if (proxy.status === 'offline') {
+                showNotification(`Proxy ${ip}:${port} sedang offline. Silakan pilih proxy lain.`, 'error');
+                addLogEntry(`Gagal menggunakan proxy ${ip}:${port}: Proxy offline`, 'error');
+                return;
+            }
+            
+            currentProxy = { ip, port };
+            activeProxyText.textContent = `${ip}:${port}`;
+            showNotification(`Proxy diubah ke ${ip}:${port}`, 'success');
+            addLogEntry(`Menggunakan proxy: ${ip}:${port}`);
+            
+            // Update UI
+            document.querySelectorAll('.proxy-card').forEach(card => {
+                card.style.border = 'none';
+            });
+            
+            const selectedCard = document.querySelector(`.use-proxy-btn[data-ip="${ip}"][data-port="${port}"]`);
+            if (selectedCard) {
+                selectedCard.closest('.proxy-card').style.border = `1px solid var(--accent-color)`;
+            }
+        }
+        
+        // Fungsi untuk menguji proxy
+        function testProxy(ip, port) {
+            addLogEntry(`Menguji proxy: ${ip}:${port}`);
+            
+            // Simulasi pengujian proxy
+            showNotification(`Menguji proxy ${ip}:${port}...`, 'info');
+            
+            setTimeout(() => {
+                const isSuccess = Math.random() > 0.2; // 80% kemungkinan berhasil
+                const speed = Math.floor(Math.random() * 300) + 100; // 100-400ms
+                
+                if (isSuccess) {
+                    showNotification(`Proxy ${ip}:${port} berfungsi dengan baik. Waktu respons: ${speed}ms`, 'success');
+                    addLogEntry(`Uji proxy ${ip}:${port} berhasil. Waktu respons: ${speed}ms`);
+                } else {
+                    showNotification(`Proxy ${ip}:${port} tidak merespons`, 'error');
+                    addLogEntry(`Uji proxy ${ip}:${port} gagal`);
+                }
+            }, 1500);
+        }
+        
+        // Fungsi untuk memulai bot
+        startBotBtn.addEventListener('click', function() {
+            if (tasks.length === 0) {
+                showNotification('Tambahkan tugas terlebih dahulu sebelum memulai bot', 'error');
+                return;
+            }
+            
+            if (!currentProxy) {
+                // Pilih proxy acak jika belum ada yang dipilih
+                const onlineProxies = proxyList.filter(p => p.status === 'online');
+                if (onlineProxies.length === 0) {
+                    showNotification('Tidak ada proxy tersedia. Silakan pilih proxy terlebih dahulu.', 'error');
+                    return;
+                }
+                
+                const randomProxy = onlineProxies[Math.floor(Math.random() * onlineProxies.length)];
+                currentProxy = { ip: randomProxy.ip, port: randomProxy.port };
+                activeProxyText.textContent = `${currentProxy.ip}:${currentProxy.port}`;
+                addLogEntry(`Proxy otomatis dipilih: ${currentProxy.ip}:${currentProxy.port}`);
+            }
+            
+            botRunning = true;
+            botPaused = false;
+            
+            // Update UI
+            botStatusIndicator.className = 'status-indicator status-working';
+            botStatusText.textContent = 'Bekerja';
+            startBotBtn.disabled = true;
+            pauseBotBtn.disabled = false;
+            stopBotBtn.disabled = false;
+            
+            // Mulai tugas pertama
+            currentTaskIndex = 0;
+            executeNextTask();
+            
+            // Mulai rotasi proxy jika diaktifkan
+            if (document.getElementById('scheduledRotation').checked) {
+                startProxyRotation();
+            }
+            
+            addLogEntry('Bot ninja dimulai');
+            showNotification('Bot ninja sedang bekerja', 'success');
+        });
+        
+        pauseBotBtn.addEventListener('click', function() {
+            if (botRunning) {
+                if (!botPaused) {
+                    // Jeda bot
+                    botPaused = true;
+                    botStatusIndicator.className = 'status-indicator status-online';
+                    botStatusText.textContent = 'Dijeda';
+                    pauseBotBtn.textContent = 'Lanjutkan';
+                    addLogEntry('Bot ninja dijeda');
+                    showNotification('Bot ninja dijeda', 'info');
+                } else {
+                    // Lanjutkan bot
+                    botPaused = false;
+                    botStatusIndicator.className = 'status-indicator status-working';
+                    botStatusText.textContent = 'Bekerja';
+                    pauseBotBtn.textContent = 'Jeda Bot';
+                    executeNextTask();
+                    addLogEntry('Bot ninja dilanjutkan');
+                    showNotification('Bot ninja dilanjutkan', 'success');
+                }
+            }
+        });
+        
+        stopBotBtn.addEventListener('click', function() {
+            botRunning = false;
+            botPaused = false;
+            
+            // Update UI
+            botStatusIndicator.className = 'status-indicator status-offline';
+            botStatusText.textContent = 'Tidak Aktif';
+            startBotBtn.disabled = false;
+            pauseBotBtn.disabled = true;
+            pauseBotBtn.textContent = 'Jeda Bot';
+            stopBotBtn.disabled = true;
+            
+            // Hentikan rotasi proxy
+            stopProxyRotation();
+            
+            addLogEntry('Bot ninja dihentikan');
+            showNotification('Bot ninja dihentikan', 'info');
+        });
+        
+        // Tambah tugas
+        addTaskBtn.addEventListener('click', function() {
+            addTaskModal.style.display = 'block';
+        });
+        
+        cancelTaskBtn.addEventListener('click', function() {
+            addTaskModal.style.display = 'none';
+        });
+        
+        // Eksekusi tugas berikutnya
+        function executeNextTask() {
+            if (!botRunning || botPaused || currentTaskIndex >= tasks.length) {
+                if (botRunning && currentTaskIndex >= tasks.length) {
+                    // Semua tugas selesai
+                    botRunning = false;
+                    botStatusIndicator.className = 'status-indicator status-online';
+                    botStatusText.textContent = 'Selesai';
+                    startBotBtn.disabled = false;
+                    pauseBotBtn.disabled = true;
+                    stopBotBtn.disabled = true;
+                    
+                    addLogEntry('Semua tugas selesai');
+                    showNotification('Bot telah menyelesaikan semua tugas', 'success');
+                }
+                return;
+            }
+            
+            const task = tasks[currentTaskIndex];
+            
+            // Tandai tugas sedang berjalan
+            task.status = 'running';
+            task.progress = 10;
+            renderTasks();
+            
+            addLogEntry(`Menjalankan tugas: ${task.url} (${task.type})`);
+            
+            // Simulasi eksekusi tugas
+            switch (task.type) {
+                case 'visit':
+                    executeVisitTask(task);
+                    break;
+                case 'form':
+                    executeFormTask(task);
+                    break;
+                case 'scrap':
+                    executeScrapTask(task);
+                    break;
+                default:
+                    executeVisitTask(task);
+            }
+        }
+        
+        function executeVisitTask(task) {
+            // Simulasi perubahan progress
+            let progress = 10;
+            const progressInterval = setInterval(() => {
+                progress += 10;
+                task.progress = progress;
+                renderTasks();
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    
+                    // Tandai tugas selesai
+                    task.status = 'completed';
+                    stats.tasksCompleted++;
+                    taskCompletedCount.textContent = stats.tasksCompleted;
+                    stats.requestCount++;
+                    requestCount.textContent = stats.requestCount;
+                    
+                    addLogEntry(`Tugas selesai: ${task.url}`);
+                    
+                    // Lanjut ke tugas berikutnya
+                    currentTaskIndex++;
+                    
+                    // Tambahkan penundaan sebelum tugas berikutnya
+                    setTimeout(() => {
+                        executeNextTask();
+                    }, 1000);
+                }
+            }, 500);
+        }
+        
+        function executeFormTask(task) {
+            // Simulasi pengisian formulir
+            let progress = 10;
+            
+            // Simulasi perubahan progress yang lebih rumit untuk form
+            const stages = [
+                { progress: 20, message: 'Mencari formulir...' },
+                { progress: 40, message: 'Mengisi formulir...' },
+                { progress: 60, message: 'Validasi data...' },
+                { progress: 80, message: 'Mengirim formulir...' },
+                { progress: 100, message: 'Selesai' }
+            ];
+            
+            let stageIndex = 0;
+            
+            const progressInterval = setInterval(() => {
+                if (stageIndex < stages.length) {
+                    const stage = stages[stageIndex];
+                    task.progress = stage.progress;
+                    addLogEntry(stage.message);
+                    renderTasks();
+                    stageIndex++;
+                } else {
+                    clearInterval(progressInterval);
+                    
+                    // Tandai tugas selesai
+                    task.status = 'completed';
+                    stats.tasksCompleted++;
+                    taskCompletedCount.textContent = stats.tasksCompleted;
+                    stats.requestCount += 3; // Form biasanya membutuhkan beberapa request
+                    requestCount.textContent = stats.requestCount;
+                    
+                    addLogEntry(`Tugas form selesai: ${task.url}`);
+                    
+                    // Lanjut ke tugas berikutnya
+                    currentTaskIndex++;
+                    
+                    // Tambahkan penundaan sebelum tugas berikutnya
+                    setTimeout(() => {
+                        executeNextTask();
+                    }, 1000);
+                }
+            }, 1000);
+        }
+        
+        function executeScrapTask(task) {
+            // Simulasi scraping data
+            let progress = 10;
+            
+            const progressInterval = setInterval(() => {
+                progress += 5;
+                task.progress = progress;
+                renderTasks();
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    
+                    // Tandai tugas selesai
+                    task.status = 'completed';
+                    stats.tasksCompleted++;
+                    taskCompletedCount.textContent = stats.tasksCompleted;
+                    stats.requestCount += 2;
+                    requestCount.textContent = stats.requestCount;
+                    
+                    addLogEntry(`Tugas scraping selesai: ${task.url}`);
+                    
+                    // Simulasi data yang di-scrap
+                    const scrapedData = {
+                        title: 'Contoh Judul Halaman',
+                        links: 24,
+                        images: 12,
+                        text: '8.5KB data diambil'
+                    };
+                    
+                    addLogEntry(`Data berhasil di-scrap: ${JSON.stringify(scrapedData)}`);
+                    
+                    // Lanjut ke tugas berikutnya
+                    currentTaskIndex++;
+                    
+                    // Tambahkan penundaan sebelum tugas berikutnya
+                    setTimeout(() => {
+                        executeNextTask();
+                    }, 1000);
+                }
+            }, 300);
+        }
+        
+        // Override fungsi rotasi proxy
+        function rotateProxy() {
+            if (proxyList.length === 0) {
+                addLogEntry('Tidak dapat rotasi proxy: Daftar proxy kosong', 'error');
+                return;
+            }
+            
+            const onlineProxies = proxyList.filter(p => p.status === 'online');
+            if (onlineProxies.length === 0) {
+                addLogEntry('Tidak dapat rotasi proxy: Tidak ada proxy online', 'error');
+                return;
+            }
+            
+            let newProxy;
+            
+            if (randomRotation.checked) {
+                // Pilih proxy acak
+                const randomIndex = Math.floor(Math.random() * onlineProxies.length);
+                newProxy = onlineProxies[randomIndex];
+            } else if (sequentialRotation.checked) {
+                // Pilih proxy berurutan
+                let currentIndex = 0;
+                if (currentProxy) {
+                    currentIndex = onlineProxies.findIndex(p => p.ip === currentProxy.ip && p.port === currentProxy.port);
+                    currentIndex = (currentIndex + 1) % onlineProxies.length;
+                }
+                newProxy = onlineProxies[currentIndex];
+            } else {
+                // Default ke acak
+                const randomIndex = Math.floor(Math.random() * onlineProxies.length);
+                newProxy = onlineProxies[randomIndex];
+            }
+            
+            useProxy(newProxy.ip, newProxy.port);
+            activeProxyText.textContent = `${newProxy.ip}:${newProxy.port}`;
+            stats.proxyRotations++;
+            proxyRotationCount.textContent = stats.proxyRotations;
+            
+            addLogEntry(`Proxy dirotasi ke ${newProxy.ip}:${newProxy.port}`);
+        }
+        
+        // Inisialisasi tambahan
+        function initializeBotInterface() {
+            // Render tugas
+            renderTasks();
+            
+            // Update konfigurasi
+            updateConfigSummaries();
+            
+            // Reset statistik
+            taskCompletedCount.textContent = stats.tasksCompleted;
+            proxyRotationCount.textContent = stats.proxyRotations;
+            requestCount.textContent = stats.requestCount;
+            errorCount.textContent = stats.errorCount;
+        }
+        
+        function updateConfigSummaries() {
+            // Update task config summary
+            const taskConfigText = `
+                Eksekusi: Berurutan<br>
+                Jeda: ${document.getElementById('batchDelay').value} detik<br>
+                Mode: Headless
+            `;
+            taskConfigSummary.innerHTML = taskConfigText;
+            
+            // Update proxy config summary
+            const proxyConfigText = `
+                Rotasi: ${document.getElementById('scheduledRotation').checked ? `Setiap ${document.getElementById('rotationInterval').value} menit` : 'Manual'}<br>
+                Metode: ${document.getElementById('randomRotation').checked ? 'Acak' : 'Berurutan'}<br>
+                Tes Proxy: ${document.getElementById('testProxyBeforeUse').checked ? 'Aktif' : 'Tidak Aktif'}
+            `;
+            proxyConfigSummary.innerHTML = proxyConfigText;
+        }
+        
+        // Event listeners untuk konfigurasi
+        configTaskBtn.addEventListener('click', function() {
+            showNotification('Fitur konfigurasi tugas akan segera hadir', 'info');
+        });
+        
+        configProxyBtn.addEventListener('click', function() {
+            openTab(null, 'TabSettings');
+            document.querySelector('.tablinks:nth-child(3)').classList.add('active');
+        });
+        
+        // Inisialisasi
+        document.addEventListener('DOMContentLoaded', () => {
+            addLogEntry('Bot Ninja dimulai');
+            loadProxies();
+            initializeBotInterface();
+            
+            // Sample tasks
+            tasks = [
+                { url: 'https://example.com', type: 'visit', status: 'pending', progress: 0 },
+                { url: 'https://google.com', type: 'visit', status: 'pending', progress: 0 }
+            ];
+            renderTasks();
+        });
+        
+        // Event listeners for new features
+        
+        // API Tab
+        document.getElementById('showApiKeyBtn').addEventListener('click', function() {
+            const apiKeyInput = document.getElementById('apiKey');
+            if (apiKeyInput.type === 'password') {
+                apiKeyInput.type = 'text';
+                this.textContent = 'Sembunyikan';
+            } else {
+                apiKeyInput.type = 'password';
+                this.textContent = 'Tampilkan';
+            }
+        });
+        
+        document.getElementById('testApiConnectionBtn').addEventListener('click', function() {
+            const apiEndpoint = document.getElementById('apiEndpoint').value;
+            if (!apiEndpoint) {
+                showNotification('Masukkan URL endpoint API terlebih dahulu', 'error');
+                return;
+            }
+            
+            showNotification('Menguji koneksi ke ' + apiEndpoint + '...', 'info');
+            
+            // Simulasi tes koneksi
+            setTimeout(() => {
+                if (Math.random() > 0.2) {
+                    showNotification('Koneksi API berhasil!', 'success');
+                    addLogEntry('Tes koneksi API berhasil: ' + apiEndpoint);
+                } else {
+                    showNotification('Gagal terhubung ke API. Periksa URL dan API key Anda', 'error');
+                    addLogEntry('Tes koneksi API gagal: ' + apiEndpoint, 'error');
+                }
+            }, 1500);
+        });
+        
+        document.getElementById('updateProxiesNowBtn').addEventListener('click', function() {
+            const proxyApiEndpoint = document.getElementById('proxyApiEndpoint').value;
+            if (!proxyApiEndpoint) {
+                showNotification('Masukkan URL endpoint proxy API terlebih dahulu', 'error');
+                return;
+            }
+            
+            showNotification('Memperbarui daftar proxy dari ' + proxyApiEndpoint + '...', 'info');
+            
+            // Simulasi pembaruan proxy
+            setTimeout(() => {
+                const randomCount = Math.floor(Math.random() * 50) + 20;
+                showNotification(`Berhasil memperbarui ${randomCount} proxy dari API`, 'success');
+                addLogEntry(`Proxy diperbarui dari ${proxyApiEndpoint}: ${randomCount} proxy diterima`);
+                
+                // Perbarui statistik
+                const newProxies = Math.floor(randomCount * 0.7);
+                const updatedProxies = randomCount - newProxies;
+                addLogEntry(`Detail pembaruan proxy: ${newProxies} proxy baru, ${updatedProxies} proxy diperbarui`);
+            }, 2000);
+        });
+        
+        // Analytics Tab
+        document.getElementById('timeRangeSelect').addEventListener('change', function() {
+            if (this.value === 'custom') {
+                document.getElementById('customDateRange').style.display = 'block';
+            } else {
+                document.getElementById('customDateRange').style.display = 'none';
+                
+                // Simulasi pembaruan data berdasarkan rentang waktu yang dipilih
+                updateAnalyticsData(this.value);
+            }
+        });
+        
+        document.getElementById('applyDateRangeBtn').addEventListener('click', function() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate) {
+                showNotification('Pilih tanggal mulai dan akhir', 'error');
+                return;
+            }
+            
+            // Simulasi pembaruan data berdasarkan rentang kustom
+            updateAnalyticsData('custom', { start: startDate, end: endDate });
+        });
+        
+        document.getElementById('generateReportBtn').addEventListener('click', function() {
+            const exportType = document.getElementById('exportType').value;
+            const exportFormat = document.getElementById('exportFormat').value;
+            
+            showNotification(`Membuat laporan ${exportType} dalam format ${exportFormat}...`, 'info');
+            
+            // Simulasi pembuatan laporan
+            setTimeout(() => {
+                showNotification(`Laporan ${exportType} berhasil dibuat dalam format ${exportFormat}`, 'success');
+                addLogEntry(`Laporan ${exportType} dibuat dalam format ${exportFormat}`);
+                
+                // Simulasi unduh file
+                const a = document.createElement('a');
+                a.href = '#';
+                a.download = `report_${exportType}_${new Date().toISOString().split('T')[0]}.${exportFormat}`;
+                a.click();
+            }, 2000);
+        });
+        
+        document.getElementById('exportProxyStatsBtn').addEventListener('click', function() {
+            showNotification('Mengekspor statistik proxy...', 'info');
+            
+            // Simulasi ekspor
+            setTimeout(() => {
+                showNotification('Statistik proxy berhasil diekspor', 'success');
+                addLogEntry('Statistik proxy diekspor ke CSV');
+                
+                // Simulasi unduh file
+                const a = document.createElement('a');
+                a.href = '#';
+                a.download = `proxy_stats_${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+            }, 1000);
+        });
+        
+        document.getElementById('exportActivityLogBtn').addEventListener('click', function() {
+            showNotification('Mengekspor log aktivitas...', 'info');
+            
+            // Simulasi ekspor
+            setTimeout(() => {
+                showNotification('Log aktivitas berhasil diekspor', 'success');
+                addLogEntry('Log aktivitas diekspor ke CSV');
+                
+                // Simulasi unduh file
+                const a = document.createElement('a');
+                a.href = '#';
+                a.download = `activity_log_${new Date().toISOString().split('T')[0]}.csv`;
+                a.click();
+            }, 1000);
+        });
+        
+        // Function untuk memperbarui data analitik (simulasi)
+        function updateAnalyticsData(timeRange, customDates = null) {
+            showNotification(`Memperbarui data analitik untuk periode: ${timeRange}`, 'info');
+            
+            // Simulasi pembaruan data
+            setTimeout(() => {
+                // Perbarui nilai statistik dengan nilai acak berdasarkan rentang waktu
+                let multiplier = 1;
+                switch(timeRange) {
+                    case 'day': multiplier = 0.3; break;
+                    case 'week': multiplier = 1; break;
+                    case 'month': multiplier = 4; break;
+                    case 'custom': multiplier = 2; break;
+                }
+                
+                document.getElementById('totalTasksValue').textContent = Math.floor(124 * multiplier);
+                document.getElementById('completedTasksValue').textContent = Math.floor(117 * multiplier);
+                document.getElementById('failedTasksValue').textContent = Math.floor(7 * multiplier);
+                document.getElementById('proxyRotationsValue').textContent = Math.floor(284 * multiplier);
+                document.getElementById('captchaDetectionsValue').textContent = Math.floor(14 * multiplier);
+                
+                // Perbarui tingkat kesuksesan
+                const completed = parseInt(document.getElementById('completedTasksValue').textContent);
+                const total = parseInt(document.getElementById('totalTasksValue').textContent);
+                const successRate = ((completed / total) * 100).toFixed(1);
+                document.getElementById('successRateValue').textContent = `${successRate}%`;
+                
+                showNotification('Data analitik berhasil diperbarui', 'success');
+            }, 1500);
+        }
+        
+        // Fingerprint dan Penjadwalan Canggih
+        document.getElementById('customScripting').addEventListener('change', function() {
+            document.getElementById('scriptEditorContainer').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        document.getElementById('enableAdvancedScheduling').addEventListener('change', function() {
+            document.getElementById('advancedSchedulingContainer').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        document.getElementById('activePeriods').addEventListener('change', function() {
+            document.getElementById('activePeriodsContainer').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        document.getElementById('schedulingFormat').addEventListener('change', function() {
+            if (this.value === 'specifichours') {
+                document.getElementById('cronScheduleContainer').style.display = 'none';
+                document.getElementById('specificHoursContainer').style.display = 'block';
+            } else if (this.value === 'cron') {
+                document.getElementById('cronScheduleContainer').style.display = 'block';
+                document.getElementById('specificHoursContainer').style.display = 'none';
+            } else {
+                document.getElementById('cronScheduleContainer').style.display = 'none';
+                document.getElementById('specificHoursContainer').style.display = 'none';
+            }
+        });
+        
+        // Tambah slot waktu baru
+        document.getElementById('addTimeSlotBtn').addEventListener('click', function() {
+            const timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.innerHTML = `
+                <input type="time" class="time-input execution-time"> 
+                <button class="small-button time-slot-remove">✕</button>
+            `;
+            document.getElementById('timeSlots').appendChild(timeSlot);
+            
+            // Tambahkan event listener untuk tombol hapus
+            timeSlot.querySelector('.time-slot-remove').addEventListener('click', function() {
+                timeSlot.remove();
+            });
+        });
+        
+        // Tambahkan event listeners untuk tombol hapus yang sudah ada
+        document.querySelectorAll('.time-slot-remove').forEach(button => {
+            button.addEventListener('click', function() {
+                this.closest('.time-slot').remove();
+            });
+        });
+        
+        // Event listeners untuk sliders
+        document.getElementById('syncInterval').addEventListener('input', function() {
+            document.getElementById('syncIntervalValue').textContent = this.value;
+        });
+        
+        document.getElementById('taskCheckInterval').addEventListener('input', function() {
+            document.getElementById('taskCheckIntervalValue').textContent = this.value;
+        });
+        
+        document.getElementById('proxyUpdateInterval').addEventListener('input', function() {
+            document.getElementById('proxyUpdateIntervalValue').textContent = this.value;
+        });
+        
+        document.getElementById('scheduleJitter').addEventListener('input', function() {
+            document.getElementById('scheduleJitterValue').textContent = '±' + this.value;
+        });
+        
+        document.getElementById('failSafeThreshold').addEventListener('input', function() {
+            document.getElementById('failSafeThresholdValue').textContent = this.value;
+        });
+        
+        document.getElementById('blacklistThreshold').addEventListener('input', function() {
+            document.getElementById('blacklistThresholdValue').textContent = this.value;
+        });
+        
+        // Inisialisasi
+        document.addEventListener('DOMContentLoaded', () => {
+            // ... existing initialization code ...
+            
+            // Add event listeners untuk tab baru
+            document.querySelectorAll('.tablinks').forEach(tab => {
+                tab.addEventListener('click', function(event) {
+                    openTab(event, this.getAttribute('onclick').match(/openTab\(event, '(.+?)'\)/)[1]);
+                });
+            });
+        });
+    </script>
+</body>
+</html> 
